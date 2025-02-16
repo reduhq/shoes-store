@@ -2,6 +2,7 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import Link from "next/link"
 
 export function LoginForm({
   className,
@@ -10,9 +11,9 @@ export function LoginForm({
   return (
     <form className={cn("flex flex-col gap-6", className)} {...props}>
       <div className="flex flex-col items-center gap-2 text-center">
-        <h1 className="text-2xl font-bold">Login to your account</h1>
+        <h1 className="text-2xl font-bold">Crea tu nueva cuenta</h1>
         <p className="text-balance text-sm text-muted-foreground">
-          Enter your email below to login to your account
+          Ingresa los siguientes datos y crea tu cuenta.
         </p>
       </div>
       <div className="grid gap-6">
@@ -22,20 +23,20 @@ export function LoginForm({
         </div>
         <div className="grid gap-2">
           <div className="flex items-center">
-            <Label htmlFor="password">Password</Label>
+            <Label htmlFor="password">Contraseña</Label>
             <a
               href="#"
               className="ml-auto text-sm underline-offset-4 hover:underline"
             >
-              Forgot your password?
+              Olvidaste tu contraseña?
             </a>
           </div>
           <Input id="password" type="password" required />
         </div>
         <Button type="submit" className="w-full">
-          Login
+          Crear Cuenta
         </Button>
-        <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
+        {/* <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
           <span className="relative z-10 bg-background px-2 text-muted-foreground">
             Or continue with
           </span>
@@ -48,13 +49,13 @@ export function LoginForm({
             />
           </svg>
           Login with GitHub
-        </Button>
+        </Button> */}
       </div>
       <div className="text-center text-sm">
-        Don&apos;t have an account?{" "}
-        <a href="#" className="underline underline-offset-4">
-          Sign up
-        </a>
+        Ya tienes cuenta?{" "}
+        <Link href="/login" className="underline underline-offset-4">
+          Inicia sesión
+        </Link>
       </div>
     </form>
   )
