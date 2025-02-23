@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import Link from "next/link"
 import { signUpNewUser } from "@/api/auth"
+import { errorToast, successToast } from "@/global-components/toasters"
 
 export function RegisterForm({
   className,
@@ -16,6 +17,15 @@ export function RegisterForm({
     const {email, password} = e.target as HTMLFormElement
     const response = await signUpNewUser(email.value, password.value)
     console.log(response)
+    if(response.success){
+      if(response.data?.user?.identities?.length == 0){
+        errorToast("El usuario ya existe")
+        return
+      }
+      successToast("Se ha enviado un correo de confirmación")
+    }else{
+      errorToast(response.error?.message as string)
+    }
   }
   return (
     <form onSubmit={registerHandler} className={cn("flex flex-col gap-6", className)} {...props}>
