@@ -4,11 +4,20 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 
 const ConfirmAccount = () => {
-  const [paramsObject, setParamsObject] = useState<{ [k: string]: string; }>({})
+  const [paramsObject, setParamsObject] = useState<Record<string, string> | null>(null);
+
   useEffect(() => {
+    // Este código solo se ejecutará en el navegador
     const hash = window.location.hash.substring(1);
-    setParamsObject(Object.fromEntries(new URLSearchParams(hash)))
+    const params = Object.fromEntries(new URLSearchParams(hash));
+    setParamsObject(params);
   }, []);
+  
+  if(paramsObject == null){
+    return (
+      <div>Cargando...</div>
+    )
+  }
 
   if (paramsObject.error) {
     return (
