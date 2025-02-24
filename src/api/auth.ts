@@ -20,3 +20,16 @@ export const signUpNewUser = async (
   console.log({ success: true, data })
   return { success: true, data };
 };
+
+export const signInUser = async (email:string, password:string)=>{
+  const {data, error} = await supabase.auth.signInWithPassword({
+    email,
+    password
+  })
+  if(error){
+    console.error("Sign in error occurred: " ,error)
+    return {success: false, error}
+  }
+  console.log("sign in success: ", data)
+  return {success: true, data}
+}

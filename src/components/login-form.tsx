@@ -1,33 +1,64 @@
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
+"use client";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import Link from "next/link"
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import Link from "next/link";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+  Form,
+} from "./ui/form";
+import { signInUser } from "@/api/auth";
+
+const formSchema = z.object({
+  email: z.string().email({ message: "Email inválido" }),
+  password: z
+    .string()
+    .min(8, { message: "La contraseña debe tener almenos 8 caracteres" }),
+});
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
+
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    const response = await signInUser(values.email, values.password)
+    console.log(response)
+  };
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
         <CardHeader className="text-center">
           <CardTitle className="text-xl">Bienvenido</CardTitle>
-          <CardDescription>
-            Inicia sesión con tus credenciales
-          </CardDescription>
+          <CardDescription>Inicia sesión con tus credenciales</CardDescription>
         </CardHeader>
         <CardContent>
-          <form>
-            <div className="grid gap-6">
-              {/* <div className="flex flex-col gap-4">
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)}>
+              <div className="grid gap-6">
+                {/* <div className="flex flex-col gap-4">
                 <Button variant="outline" className="w-full">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                     <path
@@ -52,40 +83,61 @@ export function LoginForm({
                   Or continue with
                 </span>
               </div> */}
-              <div className="grid gap-6">
-                <div className="grid gap-2">
-                  <Label htmlFor="email">Email</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="m@example.com"
-                    required
-                  />
-                </div>
-                <div className="grid gap-2">
-                  <div className="flex items-center">
-                    <Label htmlFor="password">Contraseña</Label>
-                    <a
-                      href="#"
-                      className="ml-auto text-sm underline-offset-4 hover:underline"
-                    >
-                      Olvidaste tu contraseña?
-                    </a>
+                <div className="grid gap-6">
+                  <div className="grid gap-2">
+                    <FormField
+                      control={form.control}
+                      name="email"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Email</FormLabel>
+                          <FormControl>
+                            <Input placeholder="m@example.com" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
                   </div>
-                  <Input id="password" type="password" required />
+                  <div className="grid gap-2">
+                    <FormField
+                      control={form.control}
+                      name="password"
+                      render={({ field }) => (
+                        <FormItem>
+                          <div className="flex items-center">
+                            <FormLabel>Contraseña</FormLabel>
+                            <a
+                              href="#"
+                              className="ml-auto text-sm underline-offset-4 hover:underline"
+                            >
+                              Olvidaste tu contraseña?
+                            </a>
+                          </div>
+                          <FormControl>
+                            <Input type="password" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <Button type="submit" className="w-full">
+                    Inicia Sesión
+                  </Button>
                 </div>
-                <Button type="submit" className="w-full">
-                  Inicia Sesión
-                </Button>
+                <div className="text-center text-sm">
+                  No tienes cuenta?{" "}
+                  <Link
+                    href="/register"
+                    className="underline underline-offset-4"
+                  >
+                    Registrate
+                  </Link>
+                </div>
               </div>
-              <div className="text-center text-sm">
-                No tienes cuenta?{" "}
-                <Link href="/register" className="underline underline-offset-4">
-                  Registrate
-                </Link>
-              </div>
-            </div>
-          </form>
+            </form>
+          </Form>
         </CardContent>
       </Card>
       {/* <div className="text-balance text-center text-xs text-muted-foreground [&_a]:underline [&_a]:underline-offset-4 [&_a]:hover:text-primary  ">
@@ -93,5 +145,5 @@ export function LoginForm({
         and <a href="#">Privacy Policy</a>.
       </div> */}
     </div>
-  )
+  );
 }
