@@ -33,3 +33,22 @@ export const signInUser = async (email:string, password:string)=>{
   console.log("sign in success: ", data)
   return {success: true, data}
 }
+
+export const signOut = async () =>{
+  // para ver si hay una sesion activa
+  // const {data} = await supabase.auth.getSession()
+  // console.log(data)
+  const {error} = await supabase.auth.signOut()
+  console.log('signing out')
+  if(error){
+    console.error('there was an error: ', error)
+  }
+}
+
+export const refreshAccessToken = async () =>{
+  const {data, error} = await supabase.auth.refreshSession()
+  if(error){
+    console.error('There was an error refreshing the access token: ', error)
+  }
+  return {success: true, data}
+}
