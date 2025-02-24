@@ -22,6 +22,8 @@ import {
   Form,
 } from "./ui/form";
 import { signInUser } from "@/api/auth";
+import { errorToast } from "@/global-components/toasters";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Email inválido" }),
@@ -34,6 +36,7 @@ export function LoginForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
+  const router = useRouter()
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -45,6 +48,14 @@ export function LoginForm({
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     const response = await signInUser(values.email, values.password)
     console.log(response)
+    if(response.success){
+      // 1. Save the token in a global state with sustand
+      // 2. Redirect to Home
+      return router.push('/dashboard')
+      return
+    }else{
+      errorToast(response.error?.message as string)
+    }
   };
 
   return (
