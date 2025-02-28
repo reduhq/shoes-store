@@ -1,3 +1,4 @@
+import { User } from "@/models/user";
 import { createClient } from "@/utils/supabase/client";
 
 export const signUpNewUser = async (
@@ -31,7 +32,7 @@ export const signInUser = async (email:string, password:string)=>{
     console.error("Sign in error occurred: " ,error)
     return {success: false, error}
   }
-  console.log("sign in success: ", data)
+  console.log("sign in success")
   return {success: true, data}
 }
 
@@ -42,4 +43,13 @@ export const signOut = async () =>{
   if(error){
     console.error('there was an error: ', error)
   }
+}
+
+export const getCurrentUser = async (): Promise<User> =>{
+  const supabase = await createClient()
+  const {data, error} = await supabase.auth.getSession()
+  if(error){
+    console.error('An error has occurred: ', error)
+  }
+  return data.session?.user.user_metadata as User
 }

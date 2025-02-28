@@ -47,7 +47,7 @@ export function LoginForm({
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     const response = await signInUser(values.email, values.password)
     if(response.success){
-      return redirect('/dashboard')
+      return redirect('/dashboard', )
     }else{
       errorToast(response.error?.message as string)
     }
