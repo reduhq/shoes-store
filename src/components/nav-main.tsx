@@ -1,12 +1,15 @@
-"use client"
+"use client";
 
-import { ChevronRight, type LucideIcon } from "lucide-react"
+import {
+  ChevronRight,
+  type LucideIcon,
+} from "lucide-react";
 
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@/components/ui/collapsible"
+} from "@/components/ui/collapsible";
 import {
   SidebarGroup,
   SidebarGroupLabel,
@@ -17,29 +20,35 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
   useSidebar,
-} from "@/components/ui/sidebar"
-import Link from "next/link"
+} from "@/components/ui/sidebar";
+import Link from "next/link";
+import { redirect, RedirectType } from "next/navigation";
 
 export function NavMain({
-  items,
+  items, singleItem
 }: {
-  items: {
-    title: string
-    url: string
-    icon?: LucideIcon
-    isActive?: boolean
+  items?: {
+    title: string;
+    url: string;
+    icon?: LucideIcon;
+    isActive?: boolean;
     items?: {
-      title: string
-      url: string
-    }[]
+      title: string;
+      url: string;
+    }[];
+  }[],
+  singleItem?:{
+    title: string;
+    url: string;
+    icon: LucideIcon;
   }[]
 }) {
-  const {setOpenMobile} = useSidebar()
+  const { setOpenMobile } = useSidebar();
   return (
     <SidebarGroup>
       <SidebarGroupLabel>Platform</SidebarGroupLabel>
       <SidebarMenu>
-        {items.map((item) => (
+        {items?.map((item) => (
           <Collapsible
             key={item.title}
             asChild
@@ -51,14 +60,19 @@ export function NavMain({
                 <SidebarMenuButton tooltip={item.title}>
                   {item.icon && <item.icon />}
                   <span>{item.title}</span>
-                  {<ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />}
+                  {
+                    <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                  }
                 </SidebarMenuButton>
               </CollapsibleTrigger>
               <CollapsibleContent>
                 <SidebarMenuSub>
                   {item.items?.map((subItem) => (
                     <SidebarMenuSubItem key={subItem.title}>
-                      <SidebarMenuSubButton asChild onClick={() => setOpenMobile(false)}>
+                      <SidebarMenuSubButton
+                        asChild
+                        onClick={() => setOpenMobile(false)}
+                      >
                         <Link href={subItem.url}>
                           <span>{subItem.title}</span>
                         </Link>
@@ -70,7 +84,21 @@ export function NavMain({
             </SidebarMenuItem>
           </Collapsible>
         ))}
+        {/* A Single item */}
+        {singleItem?.map(item =>(
+        <SidebarMenuItem key={item.title}>
+          <SidebarMenuButton
+            tooltip={item.title}
+            className="text-sidebar-foreground/70"
+            onClick={() => redirect(item.url, RedirectType.push)}
+          >
+            <item.icon className="text-sidebar-foreground/70" />
+            <span>{item.title}</span>
+          </SidebarMenuButton>
+        </SidebarMenuItem>
+
+        ))}
       </SidebarMenu>
     </SidebarGroup>
-  )
+  );
 }
