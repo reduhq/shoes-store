@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogTrigger } from "@radix-ui/react-dialog";
@@ -23,16 +23,20 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
+import { createClientSchema } from "@/models/client";
+import { createNewClient } from "@/api/clients";
+import { errorToast, successToast } from "@/global-components/toasters";
 
 const formSchema = z.object({
   name: z.string().min(3, { message: "Ingresa un nombre válido" }),
   lastname: z.string(),
-  email: z.string().email().or(z.literal('')),
+  email: z.string().email().or(z.literal("")),
   phone: z.string(),
   adress: z.string(),
 });
 
 const CreateNewClientButton = () => {
+  const [openDialog, setOpenDialog] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -44,13 +48,34 @@ const CreateNewClientButton = () => {
     },
   });
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log(values);
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    const client: createClientSchema = {
+      nombre: values.name,
+      apellido: values.lastname,
+      email: values.email,
+      telefono: values.phone,
+      direccion: values.adress,
+      fecha_registro: new Date(),
+    };
+    const response = await createNewClient(client);
+    if (response.success) {
+      successToast("El cliente fue creado exitosamente");
+      setOpenDialog(false);
+      form.reset();
+    } else {
+      errorToast("Error al crear el nuevo cliente");
+      setOpenDialog(false);
+      form.reset();
+    }
+    console.log(new Date());
   };
   return (
-    <Dialog>
+    <Dialog open={openDialog} onOpenChange={(state) =>{
+      setOpenDialog(state)
+      if(state) form.reset()
+    }}>
       <DialogTrigger asChild>
-        <Button>+ Nuevo Cliente</Button>
+        <Button onClick={() => setOpenDialog(true)}>+ Nuevo Cliente</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
@@ -69,7 +94,10 @@ const CreateNewClientButton = () => {
                     name="name"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Nombre <span className="text-[#f00] text-[1rem]">*</span></FormLabel>
+                        <FormLabel>
+                          Nombre{" "}
+                          <span className="text-[#f00] text-[1rem]">*</span>
+                        </FormLabel>
                         <FormControl>
                           <Input placeholder="John" {...field} />
                         </FormControl>
@@ -131,11 +159,11 @@ const CreateNewClientButton = () => {
                       <FormItem>
                         <FormLabel>Dirección</FormLabel>
                         <FormControl>
-                <Textarea
-                  placeholder="Tell us a little bit about yourself"
-                  className="resize-none"
-                  {...field}
-                />
+                          <Textarea
+                            placeholder=""
+                            className="resize-none"
+                            {...field}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
