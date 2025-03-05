@@ -26,6 +26,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { createClientSchema } from "@/models/client";
 import { createNewClient } from "@/api/clients";
 import { errorToast, successToast } from "@/global-components/toasters";
+import { redirect } from "next/navigation";
 
 const formSchema = z.object({
   name: z.string().min(3, { message: "Ingresa un nombre válido" }),
@@ -62,6 +63,7 @@ const CreateNewClientButton = () => {
       successToast("El cliente fue creado exitosamente");
       setOpenDialog(false);
       form.reset();
+      redirect('/clients')
     } else {
       errorToast("Error al crear el nuevo cliente");
       setOpenDialog(false);

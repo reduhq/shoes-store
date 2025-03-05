@@ -6,3 +6,7 @@ export interface createClientSchema{
   direccion: string | null
   fecha_registro: Date
 }
+
+export interface Client{
+  nombre: string
+}
