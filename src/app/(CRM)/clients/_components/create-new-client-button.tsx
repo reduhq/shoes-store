@@ -27,6 +27,7 @@ import { createClientSchema } from "@/models/client";
 import { createNewClient } from "@/api/clients";
 import { errorToast, successToast } from "@/global-components/toasters";
 import { redirect } from "next/navigation";
+import { LoaderCircle } from "lucide-react";
 
 const formSchema = z.object({
   name: z.string().min(3, { message: "Ingresa un nombre válido" }),
@@ -63,7 +64,7 @@ const CreateNewClientButton = () => {
       successToast("El cliente fue creado exitosamente");
       setOpenDialog(false);
       form.reset();
-      redirect('/clients')
+      redirect("/clients");
     } else {
       errorToast("Error al crear el nuevo cliente");
       setOpenDialog(false);
@@ -72,10 +73,13 @@ const CreateNewClientButton = () => {
     console.log(new Date());
   };
   return (
-    <Dialog open={openDialog} onOpenChange={(state) =>{
-      setOpenDialog(state)
-      if(state) form.reset()
-    }}>
+    <Dialog
+      open={openDialog}
+      onOpenChange={(state) => {
+        setOpenDialog(state);
+        if (state) form.reset();
+      }}
+    >
       <DialogTrigger asChild>
         <Button onClick={() => setOpenDialog(true)}>+ Nuevo Cliente</Button>
       </DialogTrigger>
@@ -101,7 +105,11 @@ const CreateNewClientButton = () => {
                           <span className="text-[#f00] text-[1rem]">*</span>
                         </FormLabel>
                         <FormControl>
-                          <Input placeholder="John" {...field} />
+                          <Input
+                            placeholder="John"
+                            {...field}
+                            disabled={form.formState.isSubmitting}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -116,7 +124,11 @@ const CreateNewClientButton = () => {
                       <FormItem>
                         <FormLabel>Apellido</FormLabel>
                         <FormControl>
-                          <Input placeholder="Doe" {...field} />
+                          <Input
+                            placeholder="Doe"
+                            {...field}
+                            disabled={form.formState.isSubmitting}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -131,7 +143,11 @@ const CreateNewClientButton = () => {
                       <FormItem>
                         <FormLabel>Email</FormLabel>
                         <FormControl>
-                          <Input placeholder="m@example.com" {...field} />
+                          <Input
+                            placeholder="m@example.com"
+                            {...field}
+                            disabled={form.formState.isSubmitting}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -146,7 +162,11 @@ const CreateNewClientButton = () => {
                       <FormItem>
                         <FormLabel>Teléfono</FormLabel>
                         <FormControl>
-                          <Input placeholder="25252525" {...field} />
+                          <Input
+                            placeholder="25252525"
+                            {...field}
+                            disabled={form.formState.isSubmitting}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -164,6 +184,7 @@ const CreateNewClientButton = () => {
                           <Textarea
                             placeholder=""
                             className="resize-none"
+                            disabled={form.formState.isSubmitting}
                             {...field}
                           />
                         </FormControl>
@@ -173,7 +194,13 @@ const CreateNewClientButton = () => {
                   />
                 </div>
 
-                <Button type="submit">Crear</Button>
+                <Button type="submit" disabled={form.formState.isSubmitting}>
+                  {form.formState.isSubmitting ? (
+                    <LoaderCircle className="w-5 h-5 animate-spin" />
+                  ) : (
+                    <p>Crear</p>
+                  )}
+                </Button>
               </div>
             </form>
           </Form>
