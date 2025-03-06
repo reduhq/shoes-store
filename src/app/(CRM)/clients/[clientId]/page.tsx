@@ -2,7 +2,16 @@ import { getClientById } from "@/api/clients.server";
 import React from "react";
 import Header from "../../_components/header";
 import { Client } from "@/models/client";
-import { Mail, MapPin, Phone, Star } from "lucide-react";
+import { Mail, MapPin, Phone, Plus, Star } from "lucide-react";
+import LoansDataTable from "./_components/loans-data-table";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 interface IParams {
   params: Promise<{ clientId: string }>;
@@ -58,6 +67,25 @@ export default async function Page({ params }: IParams) {
             ))}
           </div>
         </div>
+        {/* Informacion de prestamos */}
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between">
+            <div>
+              <CardTitle>Préstamos</CardTitle>
+              <CardDescription>
+                Historial de préstamos del cliente
+              </CardDescription>
+            </div>
+            <Button className="ml-auto">
+              <Plus className="mr-2 h-4 w-4" /> Nuevo Préstamo
+            </Button>
+          </CardHeader>
+          <CardContent>
+            <div className="overflow-x-auto">
+              <LoansDataTable clientId={data.id} />
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </>
   );
