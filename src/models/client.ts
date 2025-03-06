@@ -11,4 +11,8 @@ export interface Client{
   id: string
   nombre: string
   apellido: string
+  email: string
+  telefono: string
+  direccion: string
+  calificacion_cliente: number
 }
