@@ -1,3 +1,10 @@
+export enum PaymentFrequencyENUM{
+  diario,
+  semanal,
+  quincenal,
+  mensual,
+}
+
 export interface Loan{
   monto: number
   fecha_inicio: Date
