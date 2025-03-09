@@ -70,7 +70,7 @@ const LoansCreateBtn = () => {
           <Plus className="mr-2 h-4 w-4" /> Nuevo Préstamo
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Agregar nuevo préstamo</DialogTitle>
           <DialogDescription>
@@ -89,7 +89,10 @@ const LoansCreateBtn = () => {
                     <FormItem>
                       <FormLabel>Monto</FormLabel>
                       <FormControl>
-                        <Input type="number" placeholder="0.00" {...field} />
+                        <div className="relative">
+                        <span className="absolute left-3 top-1/2 -translate-y-1/2">$</span>
+                        <Input type="number" placeholder="0.00" {...field} className="pl-7"/>
+                        </div>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -126,14 +129,19 @@ const LoansCreateBtn = () => {
                     <FormItem>
                       <FormLabel>Tasa %</FormLabel>
                       <FormControl>
-                        <Input
-                          type="number"
-                          onKeyDown={(e) =>
-                            e.key.toString() == "." && e.preventDefault()
-                          }
-                          placeholder="15"
-                          {...field}
-                        />
+                        <div className="relative">
+                          <Input
+                            type="number"
+                            onKeyDown={(e) =>
+                              e.key.toString() == "." && e.preventDefault()
+                            }
+                            placeholder="15"
+                            {...field}
+                          />
+                          <span className="absolute right-3 top-1/2 -translate-y-1/2">
+                            %
+                          </span>
+                        </div>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
