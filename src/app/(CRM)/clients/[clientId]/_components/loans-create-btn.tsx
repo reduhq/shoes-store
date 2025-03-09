@@ -39,11 +39,30 @@ const formSchema = z.object({
         return decimalPlaces <= 4;
       },
       {
-        message: "El monto debe tener máximo 4 decimales",
+        message: "El monto puede tener máximo 4 decimales",
       }
     ),
-  plazo: z.coerce.number().positive(),
-  tasa: z.coerce.number().positive(),
+  plazo: z.coerce
+    .number()
+    .positive()
+    .refine(
+      (value) => {
+        return !value.toString().includes('.')
+      },
+      {
+        message: "El campo tiene que ser un numero entero",
+      }
+    ),
+  tasa: z.coerce.number().positive()
+  .refine(
+    (value) => {
+      const decimalPlaces = (value.toString().split(".")[1] || "").length;
+      return decimalPlaces <= 4;
+    },
+    {
+      message: "La tasa puede tener máximo 4 decimales",
+    }
+  ),
   frecuencia_pago: z.enum(["MENSUAL", "QUINCENAL", "SEMANAL", "DIARIO"]),
   tipo_prestamo: z.enum(["INTERES_SIMPLE", "INTERES_COMPUESTO"]),
 });
@@ -90,8 +109,15 @@ const LoansCreateBtn = () => {
                       <FormLabel>Monto</FormLabel>
                       <FormControl>
                         <div className="relative">
-                        <span className="absolute left-3 top-1/2 -translate-y-1/2">$</span>
-                        <Input type="number" placeholder="0.00" {...field} className="pl-7"/>
+                          <span className="absolute left-3 top-1/2 -translate-y-1/2">
+                            $
+                          </span>
+                          <Input
+                            type="number"
+                            placeholder="0.00"
+                            {...field}
+                            className="pl-7"
+                          />
                         </div>
                       </FormControl>
                       <FormMessage />
@@ -105,13 +131,10 @@ const LoansCreateBtn = () => {
                   name="plazo"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Plazo (meses)</FormLabel>
+                      <FormLabel>N. Cuotas</FormLabel>
                       <FormControl>
                         <Input
                           type="number"
-                          onKeyDown={(e) =>
-                            e.key.toString() == "." && e.preventDefault()
-                          }
                           placeholder="12"
                           {...field}
                         />
@@ -132,10 +155,8 @@ const LoansCreateBtn = () => {
                         <div className="relative">
                           <Input
                             type="number"
-                            onKeyDown={(e) =>
-                              e.key.toString() == "." && e.preventDefault()
-                            }
                             placeholder="15"
+                            className="no-spinners"
                             {...field}
                           />
                           <span className="absolute right-3 top-1/2 -translate-y-1/2">

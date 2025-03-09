@@ -83,7 +83,7 @@ const CreateNewClientButton = () => {
       <DialogTrigger asChild>
         <Button onClick={() => setOpenDialog(true)}>+ Nuevo Cliente</Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[425px]  max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Crea un nuevo Cliente</DialogTitle>
           <DialogDescription>
