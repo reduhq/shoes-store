@@ -7,6 +7,7 @@ export enum PaymentFrequencyENUM{
 
 export interface Loan{
   id: string
+  cliente_id: string
   monto: number
   fecha_inicio: Date
   cuotas: number

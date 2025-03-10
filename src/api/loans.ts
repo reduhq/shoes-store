@@ -9,3 +9,12 @@ export const getLoansByClientId = async(clientId: string) =>{
   }
   return data
 }
+
+export const getLoanById = async(id: string)=>{
+  const supabase = await createClient()
+  const {data, error} = await supabase.from('prestamos').select('*').eq('id', id).single()
+  if(error){
+    redirect('/clients')
+  }
+  return data
+}

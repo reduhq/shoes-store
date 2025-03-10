@@ -23,7 +23,7 @@ export const columns: ColumnDef<Installments>[] = [
     accessorKey: 'pagada',
     header: 'Estado',
     cell: ({row}) =>(
-      <div><Badge variant={row.original.pagada?"success":'destructive'}>{row.original.pagada?'Pagada':'Pendiente'}</Badge></div>
+      <div><Badge variant={row.original.pagada?"success":'secondary'}>{row.original.pagada?'Pagada':'Pendiente'}</Badge></div>
     )
   },
 ]

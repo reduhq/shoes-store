@@ -26,7 +26,7 @@ export const columns: ColumnDef<Loan>[] = [
     header: "Estado",
     cell: ({row}) =>(
       // estado: pendiente, cancelado, pagado
-      <Badge className="capitalize" variant={row.original.estado === 'pendiente'?'default':'success'}>{row.original.estado}</Badge>
+      <Badge className="capitalize" variant={row.original.estado === 'pendiente'?'secondary':'success'}>{row.original.estado}</Badge>
     )
   },
   {
