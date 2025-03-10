@@ -13,7 +13,7 @@ const Page = async() => {
       <Header title="Clientes" />
       <div>
         <CreateNewClientButton/>
-        <DataTable columns={columns} data={response.data as Client[]}/>
+        <DataTable columns={columns} data={response.data as Client[]} redirectTo="/clients"/>
       </div>
     </div>
   );

@@ -36,7 +36,7 @@ const LoansDataTable = ({clientId}: {clientId: string}) => {
     </CardHeader>
     <CardContent>
       <div className="overflow-x-auto">
-      <DataTable data={loans} columns={columns}/>
+      <DataTable data={loans} columns={columns} redirectTo='/loans'/>
       </div>
     </CardContent>
   </Card>
