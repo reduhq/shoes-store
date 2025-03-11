@@ -3,12 +3,13 @@ import InstallmentTable from "./_components/installment-table";
 import Header from "../../_components/header";
 import { Badge } from "@/components/ui/badge";
 import { getLoanById } from "@/api/loans";
-import { Calendar, CreditCard, DollarSign } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Calendar, CreditCard } from "lucide-react";
 import { Loan } from "@/models/loan";
 import { getClientById } from "@/api/clients.server";
 import { Client } from "@/models/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import PayInstallmentBtn from "./_components/pay-installment-btn";
+import { getInstallmentsByLoanId } from "@/api/installments";
 
 interface IParams {
   params: Promise<{ loanId: string }>;
@@ -18,6 +19,7 @@ const Page = async ({ params }: IParams) => {
   const { loanId } = await params;
   const loan: Loan = await getLoanById(loanId);
   const client: { data: Client } = await getClientById(loan.cliente_id);
+  const installment = await getInstallmentsByLoanId(loanId)
 
   const formatDate = (dateString: string) => {
     if (dateString === "-") return "-";
@@ -37,7 +39,7 @@ const Page = async ({ params }: IParams) => {
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div className="space-y-3">
             <div className="flex flex-row items-center gap-4">
-              <h1 className="text-3xl font-bold">${loan.monto}</h1>
+              <h1 className="text-3xl font-bold">${loan.monto.toLocaleString()}</h1>
               <Badge
                 variant={loan.estado === "pagado" ? "success" : "secondary"}
                 className="text-sm h-6 px-3 py-1"
@@ -65,9 +67,7 @@ const Page = async ({ params }: IParams) => {
             </div>
           </div>
           {loan.estado === "pendiente" && (
-            <Button className="w-full md:w-auto">
-              <DollarSign className="mr-2 h-4 w-4" /> Pagar Cuota
-            </Button>
+            <PayInstallmentBtn installmentData={installment}/>
           )}
         </div>
 
