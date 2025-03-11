@@ -1,3 +1,4 @@
+import { createNewLoan } from "@/api/loans";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -23,9 +24,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { errorToast, successToast } from "@/global-components/toasters";
+import { createLoanSchema } from "@/models/loan";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoaderCircle, Plus } from "lucide-react";
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import z from "zod";
 
@@ -47,30 +50,33 @@ const formSchema = z.object({
     .positive()
     .refine(
       (value) => {
-        return !value.toString().includes('.')
+        return !value.toString().includes(".");
       },
       {
         message: "El campo tiene que ser un numero entero",
       }
     ),
-  tasa: z.coerce.number().positive()
-  .refine(
-    (value) => {
-      const decimalPlaces = (value.toString().split(".")[1] || "").length;
-      return decimalPlaces <= 4;
-    },
-    {
-      message: "La tasa puede tener máximo 4 decimales",
-    }
-  ),
-  frecuencia_pago: z.enum(["MENSUAL", "QUINCENAL", "SEMANAL", "DIARIO"]),
+  tasa: z.coerce
+    .number()
+    .positive()
+    .refine(
+      (value) => {
+        const decimalPlaces = (value.toString().split(".")[1] || "").length;
+        return decimalPlaces <= 4;
+      },
+      {
+        message: "La tasa puede tener máximo 4 decimales",
+      }
+    ),
+  frecuencia_pago: z.enum(["mensual", "quincenal", "semanal", "diario"]),
   tipo_prestamo: z.enum(["INTERES_SIMPLE", "INTERES_COMPUESTO"]),
 });
 
-const paymentFrequency = ["MENSUAL", "QUINCENAL", "SEMANAL", "DIARIO"];
+const paymentFrequency = ["mensual", "quincenal", "semanal", "diario"];
 const loanType = ["INTERES_SIMPLE", "INTERES_COMPUESTO"];
 
-const LoansCreateBtn = () => {
+const LoansCreateBtn = ({ cliente_id }: { cliente_id: string }) => {
+  const [openDialog, setOpenDialog] = useState(false)
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -79,11 +85,30 @@ const LoansCreateBtn = () => {
       tasa: 0,
     },
   });
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log(values);
+  const onSubmit = async(values: z.infer<typeof formSchema>) => {
+    const newLoan: createLoanSchema = {
+      cliente_id: cliente_id,
+      monto: values.monto,
+      fecha_inicio: new Date(),
+      cuotas: values.plazo,
+      tasa_aplicada: values.tasa,
+      frecuencia_pago: values.frecuencia_pago,
+      tipo_prestamo: values.tipo_prestamo
+    };
+    const {success} = await createNewLoan(newLoan)
+    if(!success){
+      errorToast('Se ha producido un error creando un nuevo préstamo')
+      setOpenDialog(false)
+      return
+    }
+    successToast('Se ha creado un nuevo prestamo')
+    setOpenDialog(false)
   };
   return (
-    <Dialog>
+    <Dialog open={openDialog} onOpenChange={state => {
+      setOpenDialog(state)
+      if(state ) form.reset()
+    }}>
       <DialogTrigger asChild>
         <Button className="ml-auto">
           <Plus className="mr-2 h-4 w-4" /> Nuevo Préstamo
@@ -115,6 +140,7 @@ const LoansCreateBtn = () => {
                           <Input
                             type="number"
                             placeholder="0.00"
+                            disabled={form.formState.isSubmitting}
                             {...field}
                             className="pl-7"
                           />
@@ -133,11 +159,8 @@ const LoansCreateBtn = () => {
                     <FormItem>
                       <FormLabel>N. Cuotas</FormLabel>
                       <FormControl>
-                        <Input
-                          type="number"
-                          placeholder="12"
-                          {...field}
-                        />
+                        <Input type="number" placeholder="12" {...field}
+                            disabled={form.formState.isSubmitting} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -156,6 +179,7 @@ const LoansCreateBtn = () => {
                           <Input
                             type="number"
                             placeholder="15"
+                            disabled={form.formState.isSubmitting}
                             className="no-spinners"
                             {...field}
                           />
@@ -179,6 +203,7 @@ const LoansCreateBtn = () => {
                       <Select
                         onValueChange={field.onChange}
                         defaultValue={field.value}
+                        disabled={form.formState.isSubmitting}
                       >
                         <FormControl>
                           <SelectTrigger>
@@ -212,6 +237,7 @@ const LoansCreateBtn = () => {
                       <Select
                         onValueChange={field.onChange}
                         defaultValue={field.value}
+                        disabled={form.formState.isSubmitting}
                       >
                         <FormControl>
                           <SelectTrigger>

@@ -39,28 +39,37 @@ export default async function Page({ params }: IParams) {
             {data.calificacion_cliente ?? 5}/5
           </span>
         </div>
-        <div className="flex flex-col sm:flex-row gap-4 mt-2">
+        {data.email ||
+          (data.telefono && (
+            <div className="flex flex-col sm:flex-row gap-4 mt-2">
+              {data.email && (
+                <div className="flex items-center gap-2">
+                  <Mail className="h-4 w-4 text-muted-foreground" />
+                  <span>{data.email}</span>
+                </div>
+              )}
+              {data.telefono && (
+                <div className="flex items-center gap-2">
+                  <Phone className="h-4 w-4 text-muted-foreground" />
+                  <span>{data.telefono}</span>
+                </div>
+              )}
+            </div>
+          ))}
+        {data.direccion && (
           <div className="flex items-center gap-2">
-            <Mail className="h-4 w-4 text-muted-foreground" />
-            <span>{data.email}</span>
+            <MapPin className="h-4 w-4 text-muted-foreground self-start mt-1" />
+            <div className="flex flex-col">
+              {data.direccion.split("\n").map((value, i) => (
+                <p className="max-w-[20rem]" key={i}>
+                  {value}
+                </p>
+              ))}
+            </div>
           </div>
-          <div className="flex items-center gap-2">
-            <Phone className="h-4 w-4 text-muted-foreground" />
-            <span>{data.telefono}</span>
-          </div>
-        </div>
-        <div className="flex items-center gap-2">
-          <MapPin className="h-4 w-4 text-muted-foreground self-start mt-1" />
-          <div className="flex flex-col">
-            {data.direccion.split("\n").map((value, i) => (
-              <p className="max-w-[20rem]" key={i}>
-                {value}
-              </p>
-            ))}
-          </div>
-        </div>
+        )}
         {/* Informacion de prestamos */}
-        <LoansDataTable clientId={data.id}/>
+        <LoansDataTable clientId={data.id} />
       </div>
     </>
   );

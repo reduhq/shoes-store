@@ -32,7 +32,7 @@ const LoansDataTable = ({clientId}: {clientId: string}) => {
           Historial de préstamos del cliente
         </CardDescription>
       </div>
-      <LoansCreateBtn/>
+      <LoansCreateBtn cliente_id={clientId}/>
     </CardHeader>
     <CardContent>
       <div className="overflow-x-auto">
