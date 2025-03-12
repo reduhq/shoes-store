@@ -1,13 +1,13 @@
 export enum PaymentFrequencyENUM{
-  diario,
-  semanal,
-  quincenal,
-  mensual,
+  diario = 'diario',
+  semanal = 'semanal',
+  quincenal = 'quincenal',
+  mensual = 'mensual',
 }
 
 export enum LoanType{
-  INTERES_SIMPLE,
-  INTERES_COMPUESTO
+  INTERES_SIMPLE = 'INTERES_SIMPLE',
+  INTERES_COMPUESTO = 'INTERES_COMPUESTO'
 }
 
 export interface Loan{
@@ -26,6 +26,6 @@ export interface createLoanSchema{
   fecha_inicio: Date
   cuotas: number
   tasa_aplicada: number
-  frecuencia_pago: string // PaymentFrequencyENUM{
-  tipo_prestamo: string // LoanType
+  frecuencia_pago: PaymentFrequencyENUM // PaymentFrequencyENUM{
+  tipo_prestamo: LoanType // LoanType
 }

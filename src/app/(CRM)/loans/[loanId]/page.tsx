@@ -67,7 +67,7 @@ const Page = async ({ params }: IParams) => {
             </div>
           </div>
           {loan.estado === "pendiente" && (
-            <PayInstallmentBtn installmentData={installment}/>
+            <PayInstallmentBtn installmentData={installment} loanId={loanId}/>
           )}
         </div>
 
@@ -116,7 +116,7 @@ const Page = async ({ params }: IParams) => {
           </CardContent>
         </Card>
         {/* installments data table */}
-        <InstallmentTable loanId={loanId} />
+        <InstallmentTable installmentData={installment} />
       </div>
     </>
   );

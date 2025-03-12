@@ -25,7 +25,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { errorToast, successToast } from "@/global-components/toasters";
-import { createLoanSchema } from "@/models/loan";
+import { createLoanSchema, LoanType, PaymentFrequencyENUM } from "@/models/loan";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoaderCircle, Plus } from "lucide-react";
 import React, { useState } from "react";
@@ -92,8 +92,8 @@ const LoansCreateBtn = ({ cliente_id }: { cliente_id: string }) => {
       fecha_inicio: new Date(),
       cuotas: values.plazo,
       tasa_aplicada: values.tasa,
-      frecuencia_pago: values.frecuencia_pago,
-      tipo_prestamo: values.tipo_prestamo
+      frecuencia_pago: PaymentFrequencyENUM[values.frecuencia_pago],
+      tipo_prestamo: LoanType[values.tipo_prestamo]
     };
     const {success} = await createNewLoan(newLoan)
     if(!success){

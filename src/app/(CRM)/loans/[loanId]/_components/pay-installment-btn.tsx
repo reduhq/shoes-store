@@ -1,10 +1,10 @@
 "use client";
+import { createNewPayment } from "@/api/payment";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -25,9 +25,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { errorToast, successToast } from "@/global-components/toasters";
 import { Installments } from "@/models/installment";
+import { CreatePaymentSchema, PaymentMethodEnum } from "@/models/payment";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DollarSign, LoaderCircle } from "lucide-react";
+import { redirect } from "next/navigation";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -36,17 +39,19 @@ const metodoPago = ["Efectivo", "Transferencia_bancaria", "Tarjeta_credito"];
 
 const PayInstallmentBtn = ({
   installmentData,
+  loanId,
 }: {
   installmentData: Installments[];
+  loanId: string;
 }) => {
   const sortInstallments = () => {
-    return installmentData.sort((installment) => installment.numero_cuota);
+    return installmentData.sort((a, b) => a.numero_cuota - b.numero_cuota);
   };
   const getCurrentInstallment = () => {
     const currentInstallment = sortInstallments().find(
       (installment) => !installment.pagada
     );
-    return currentInstallment;
+    return currentInstallment!;
   };
 
   const formSchema = z.object({
@@ -54,13 +59,17 @@ const PayInstallmentBtn = ({
       .number()
       .positive()
       .max(
-        getCurrentInstallment()?.monto_cuota ??
-          0 - (getCurrentInstallment()?.monto_pagado ?? 0),
+        Number(
+          (
+            getCurrentInstallment().monto_cuota -
+            getCurrentInstallment().monto_pagado
+          ).toFixed(2)
+        ),
         {
-          message: `El pago pendiente es de ${
-            getCurrentInstallment()?.monto_cuota ??
-            0 - (getCurrentInstallment()?.monto_pagado ?? 0)
-          }`,
+          message: `El pago pendiente es de ${(
+            getCurrentInstallment().monto_cuota -
+            getCurrentInstallment().monto_pagado
+          ).toFixed(2)}`,
         }
       ),
     metodo_pago: z.enum([
@@ -78,7 +87,25 @@ const PayInstallmentBtn = ({
     },
   });
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    console.log(values);
+    const paymentData: CreatePaymentSchema = {
+      cuota_id: getCurrentInstallment().id,
+      monto: values.monto,
+      metodo_pago: PaymentMethodEnum[values.metodo_pago],
+      fecha_pago: new Date(),
+    };
+    const { error } = await createNewPayment(paymentData);
+    if (error) {
+      errorToast("Ha ocurrido un error al realizar el pago");
+      setOpenDialog(false);
+      return;
+    }
+    successToast("Pago realizado con éxito");
+    setOpenDialog(false);
+    form.reset();
+    redirect(`/loans/${loanId}`);
+    // redirect(`/loans/${loanId}`)
+    // router.push(`/loans/${loanId}`)
+    // `/loans/${loanId}`
   };
   return (
     <Dialog
@@ -120,6 +147,7 @@ const PayInstallmentBtn = ({
                           <Input
                             type="number"
                             placeholder="0.00"
+                            disabled={form.formState.isSubmitting}
                             {...field}
                             className="pl-7"
                           />
@@ -140,6 +168,7 @@ const PayInstallmentBtn = ({
                       <Select
                         onValueChange={field.onChange}
                         defaultValue={field.value}
+                        disabled={form.formState.isSubmitting}
                       >
                         <FormControl>
                           <SelectTrigger>
@@ -163,14 +192,7 @@ const PayInstallmentBtn = ({
                   )}
                 />
               </div>
-              <DialogFooter>
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => setOpenDialog(false)}
-                >
-                  Cancelar
-                </Button>
+              <div className="flex flex-col gap-2">
                 <Button type="submit" disabled={form.formState.isSubmitting}>
                   {form.formState.isSubmitting ? (
                     <LoaderCircle className="w-5 h-5 animate-spin" />
@@ -178,7 +200,15 @@ const PayInstallmentBtn = ({
                     <p>Registrar pago</p>
                   )}
                 </Button>
-              </DialogFooter>
+
+                {/* <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setOpenDialog(false)}
+                >
+                  Cancelar
+                </Button> */}
+              </div>
             </div>
           </form>
         </Form>
