@@ -10,7 +10,7 @@ import {
 import { Installments } from "@/models/installment";
 import { Badge } from "@/components/ui/badge";
 import { Payment } from "@/models/payment";
-import { useState } from "react";
+import React, { useState } from "react";
 import { getPaymentsByInstallmentId } from "@/api/payment";
 
 export function InstallmentDataTable({
@@ -59,13 +59,13 @@ export function InstallmentDataTable({
       </TableHeader>
       <TableBody>
         {installmentData.map((payment: Installments) => (
-          <>
+          <React.Fragment key={payment.id}>
             <TableRow
               key={payment.id}
-              className="cursor-pointer hover:bg-muted/50"
+              className={`cursor-pointer hover:bg-muted/50 ${expandedPayments[payment.id] && expandedPayments[payment.id].expanded && expandedPayments[payment.id].paymentData.length>0 && 'shadow-md'}`}
               onClick={() => togglePaymentExpanded(payment.id)}
             >
-              <TableCell>{payment.numero_cuota}</TableCell>
+              <TableCell className={`${expandedPayments[payment.id] && expandedPayments[payment.id].expanded && expandedPayments[payment.id].paymentData.length>0 && 'border-l-4 border-l-primary'}`}>{payment.numero_cuota}</TableCell>
               <TableCell>{payment.monto_cuota.toLocaleString()}</TableCell>
               <TableCell>{payment.monto_pagado.toFixed(2)}</TableCell>
               <TableCell>
@@ -106,10 +106,10 @@ export function InstallmentDataTable({
                       {expandedPayments[payment.id] &&
                         expandedPayments[payment.id].paymentData.length > 0 && (
                           <div>
-                            <p className="text-sm font-medium mb-2">
+                            <p className="text-sm mb-2 font-semibold">
                               Desglose de pagos
                             </p>
-                            <div className="bg-background rounded-md overflow-hidden">
+                            <div className="bg-background rounded-md overflow-hidden border shadow-sm">
                               <Table>
                                 <TableHeader>
                                   <TableRow>
@@ -123,7 +123,7 @@ export function InstallmentDataTable({
                                   {expandedPayments[payment.id].paymentData.map(
                                     (subPayment: Payment, i) => (
                                       <TableRow key={i}>
-                                        <TableCell>{i}</TableCell>
+                                        <TableCell>{i+1}</TableCell>
                                         <TableCell>
                                           ${subPayment.monto.toLocaleString()}
                                         </TableCell>
@@ -147,7 +147,7 @@ export function InstallmentDataTable({
                 </TableCell>
               </TableRow>
             )}
-          </>
+          </React.Fragment>
         ))}
       </TableBody>
     </Table>
