@@ -44,11 +44,11 @@ const PayInstallmentBtn = ({
   installmentData: Installments[];
   loanId: string;
 }) => {
-  const sortInstallments = () => {
-    return installmentData.sort((a, b) => a.numero_cuota - b.numero_cuota);
-  };
+  // const sortInstallments = () => {
+  //   return installmentData.sort((a, b) => a.numero_cuota - b.numero_cuota);
+  // };
   const getCurrentInstallment = () => {
-    const currentInstallment = sortInstallments().find(
+    const currentInstallment = installmentData.find(
       (installment) => !installment.pagada
     );
     return currentInstallment!;
