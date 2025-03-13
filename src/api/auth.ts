@@ -11,7 +11,7 @@ export const signUpNewUser = async (
     email,
     password,
     options: {
-      // emailRedirectTo: `${process.env.NEXT_PUBLIC_HOST_URL}/confirm-account`,
+      emailRedirectTo: `${process.env.NEXT_PUBLIC_HOST_URL}/auth/confirm`,
       data: { name },
     },
   });
