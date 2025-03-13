@@ -9,3 +9,12 @@ export const createNewPayment = async(paymentData: CreatePaymentSchema)=>{
   }
   return {data}
 }
+
+export const getPaymentsByInstallmentId = async(installmentId: string)=>{
+  const supabase = await createClient()
+  const {data, error} = await supabase.from('pagos').select().eq('cuota_id', installmentId)
+  if(error){
+    return {error}
+  }
+  return {data}
+}

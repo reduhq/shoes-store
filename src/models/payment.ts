@@ -4,6 +4,12 @@ export enum PaymentMethodEnum{
   Tarjeta_credito = 'Tarjeta_credito'
 }
 
+export interface Payment{
+  fecha_pago: Date
+  monto: number
+  metodo_pago: PaymentMethodEnum
+}
+
 export interface CreatePaymentSchema{
   cuota_id: string
   monto: number

@@ -6,8 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { DataTable } from "./data-table";
-import { columns } from "./columns";
+import { InstallmentDataTable } from "./installment-data-table";
 import { Installments } from "@/models/installment";
 
 const InstallmentTable = ({installmentData}: {installmentData: Installments[]}) => {
@@ -18,7 +17,7 @@ const InstallmentTable = ({installmentData}: {installmentData: Installments[]}) 
         <CardDescription>Historial de pagos para este préstamo</CardDescription>
       </CardHeader>
       <CardContent>
-        <DataTable data={installmentData} columns={columns} />
+        <InstallmentDataTable installmentData={installmentData} />
       </CardContent>
     </Card>
   );
