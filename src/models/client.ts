@@ -16,3 +16,15 @@ export interface Client{
   direccion: string
   calificacion_cliente: number
 }
+
+export interface ClientDataTableObject{
+  id: string
+  nombre: string
+  apellido: string
+  email: string
+  telefono: string
+  direccion: string
+  calificacion_cliente: number
+  prestamos: [{count: number}]
+
+}

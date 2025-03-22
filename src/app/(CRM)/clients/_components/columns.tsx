@@ -1,11 +1,27 @@
 "use client";
-import { Client } from "@/models/client";
+import { ClientDataTableObject } from "@/models/client";
 import { ColumnDef } from "@tanstack/react-table";
 
-export const columns: ColumnDef<Client>[] = [
+export const columns: ColumnDef<ClientDataTableObject>[] = [
   {
     accessorKey: "nombre",
     header: "Nombre",
+  },
+  {
+    accessorKey: "calificacion_cliente",
+    header: "Rating",
+  },
+  {
+    accessorKey: "prestamos_activos",
+    header: "Prestamos Activos",
+    cell: ({row}) => {
+      const prestamos = row.original.prestamos
+      return prestamos[0].count
+    }
+  },
+  {
+    accessorKey: "fecha_ultimo_prestamo",
+    header: "Último Préstamo",
   },
   // {
   //   id: "actions",
