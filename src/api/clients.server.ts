@@ -18,6 +18,7 @@ export const getClientsByUser = async () => {
   if (error) {
     return { success: false };
   }
+  
   return { success: true, data };
 };
 
