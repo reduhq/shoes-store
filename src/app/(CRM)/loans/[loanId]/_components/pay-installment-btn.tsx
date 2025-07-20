@@ -53,6 +53,10 @@ const PayInstallmentBtn = ({
     );
     return currentInstallment!;
   };
+  const settleInstallment = () =>{
+    const currentInstallment = getCurrentInstallment()
+    form.setValue("monto", currentInstallment.monto_cuota - currentInstallment.monto_pagado)
+  }
 
   const formSchema = z.object({
     monto: z.coerce
@@ -128,6 +132,7 @@ const PayInstallmentBtn = ({
             {getCurrentInstallment()?.numero_cuota}
           </DialogDescription>
         </DialogHeader>
+        <Button onClick={settleInstallment} className="bg-green-500 hover:bg-green-400 font-bold">Saldar cuota</Button>
         {/* Form */}
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} noValidate>
