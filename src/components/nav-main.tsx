@@ -1,9 +1,6 @@
 "use client";
 
-import {
-  ChevronRight,
-  type LucideIcon,
-} from "lucide-react";
+import { ChevronRight, type LucideIcon } from "lucide-react";
 
 import {
   Collapsible,
@@ -22,10 +19,10 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
-import { redirect, RedirectType } from "next/navigation";
 
 export function NavMain({
-  items, singleItem
+  items,
+  singleItem,
 }: {
   items?: {
     title: string;
@@ -36,12 +33,12 @@ export function NavMain({
       title: string;
       url: string;
     }[];
-  }[],
-  singleItem?:{
+  }[];
+  singleItem?: {
     title: string;
     url: string;
     icon: LucideIcon;
-  }[]
+  }[];
 }) {
   const { setOpenMobile } = useSidebar();
   return (
@@ -85,18 +82,19 @@ export function NavMain({
           </Collapsible>
         ))}
         {/* A Single item */}
-        {singleItem?.map(item =>(
-        <SidebarMenuItem key={item.title}>
-          <SidebarMenuButton
-            tooltip={item.title}
-            className="text-sidebar-foreground/70"
-            onClick={() => redirect(item.url, RedirectType.push)}
-          >
-            <item.icon className="text-sidebar-foreground/70" />
-            <span>{item.title}</span>
-          </SidebarMenuButton>
-        </SidebarMenuItem>
-
+        {singleItem?.map((item) => (
+          <SidebarMenuItem key={item.title}>
+            <Link href={item.url}>
+              <SidebarMenuButton
+                tooltip={item.title}
+                className="text-sidebar-foreground/70"
+                // onClick={() => redirect(item.url, RedirectType.push)}
+              >
+                <item.icon className="text-sidebar-foreground/70" />
+                <span>{item.title}</span>
+              </SidebarMenuButton>
+            </Link>
+          </SidebarMenuItem>
         ))}
       </SidebarMenu>
     </SidebarGroup>

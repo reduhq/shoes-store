@@ -14,19 +14,19 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { redirect, RedirectType } from "next/navigation";
+import Link from "next/link";
 import React from "react";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
-  redirectTo?: string
+  redirectTo?: string;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
-  redirectTo = ''
+  redirectTo = "",
 }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
     data,
@@ -57,21 +57,28 @@ export function DataTable<TData, TValue>({
         <TableBody>
           {table.getRowModel().rows.length ? (
             table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                  onClick={()=>{redirect(`${redirectTo}/${(row.original as Client).id}`, RedirectType.push)}}
-                  className="cursor-pointer"
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+              <TableRow
+                key={row.id}
+                data-state={row.getIsSelected() && "selected"}
+                // onClick={() => {
+                //   redirect(
+                //     `${redirectTo}/${(row.original as Client).id}`,
+                //     RedirectType.push
+                //   );
+                // }}
+                // className="cursor-pointer"
+              >
+                {row.getVisibleCells().map((cell) => (
+                  <TableCell key={cell.id}>
+                    <Link key={row.id} href={`${redirectTo}/${(row.original as Client).id}`} className="inline-block h-full w-full">
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
                       )}
-                    </TableCell>
-                  ))}
-                </TableRow>
+                    </Link>
+                  </TableCell>
+                ))}
+              </TableRow>
             ))
           ) : (
             <TableRow>
