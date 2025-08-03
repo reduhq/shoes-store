@@ -27,7 +27,7 @@ import { createClientSchema } from "@/models/client";
 import { createNewClient } from "@/api/clients";
 import { errorToast, successToast } from "@/global-components/toasters";
 import { redirect } from "next/navigation";
-import { LoaderCircle } from "lucide-react";
+import { LoaderCircle, UserPlus } from "lucide-react";
 
 const formSchema = z.object({
   name: z.string().min(3, { message: "Ingresa un nombre válido" }),
@@ -81,7 +81,7 @@ const CreateNewClientButton = () => {
       }}
     >
       <DialogTrigger asChild>
-        <Button onClick={() => setOpenDialog(true)}>+ Nuevo Cliente</Button>
+        <Button onClick={() => setOpenDialog(true)}><UserPlus className="h-4 w-4" /> Nuevo Cliente</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]  max-h-[90vh] overflow-y-auto">
         <DialogHeader>
