@@ -86,6 +86,7 @@ export function NavMain({
           <SidebarMenuItem key={item.title}>
             <Link href={item.url}>
               <SidebarMenuButton
+                onClick={() => setOpenMobile(false)}
                 tooltip={item.title}
                 className="text-sidebar-foreground/70"
                 // onClick={() => redirect(item.url, RedirectType.push)}
