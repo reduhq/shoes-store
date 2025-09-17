@@ -28,7 +28,7 @@ export default async function Page({ params }: IParams) {
         </div>
 
         {/* tabs */}
-        <Tabs defaultValue="overview" className="mb-6">
+        <Tabs defaultValue="loans" className="mb-6">
           <TabsList>
             <TabsTrigger value="loans">Préstamos</TabsTrigger>
             <TabsTrigger value="overview">Resumen</TabsTrigger>
